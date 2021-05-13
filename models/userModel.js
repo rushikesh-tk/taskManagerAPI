@@ -13,12 +13,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  tasks: [
-    {
-      title: String,
-      content: String,
-    },
-  ],
 });
 
 const User = mongoose.model("User", userSchema);
