@@ -4,7 +4,7 @@ import requireLogin from "../middleware/requireLogin.js";
 
 const Router = express.Router();
 
-Router.post("/createtask", requireLogin, (req, res) => {
+Router.post("/task", requireLogin, (req, res) => {
   const { title, content } = req.body;
 
   if (!title || !content) {
@@ -25,6 +25,7 @@ Router.post("/createtask", requireLogin, (req, res) => {
       res.json({ task: result });
     })
     .catch((err) => {
+      res.status(500).json("Something went wrong");
       console.log(err);
     });
 });
@@ -35,28 +36,29 @@ Router.get("/tasks", requireLogin, (req, res) => {
       res.json({ result });
     })
     .catch((err) => {
+      res.status(500).json("Something went wrong");
       console.log(`Error : ${err}`);
     });
 });
 
-Router.put("/updatetask/:taskId", requireLogin, (req, res) => {
+Router.patch("/task/:taskId", requireLogin, (req, res) => {
   Task.findByIdAndUpdate(
     req.params.taskId,
     {
       title: req.body.title,
       content: req.body.content,
     },
-    function (err, result) {
+    (err, result) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        res.send("Task updated successfully");
       }
     }
   );
 });
 
-Router.delete("/deletetask/:taskId", requireLogin, (req, res) => {
+Router.delete("/task/:taskId", requireLogin, (req, res) => {
   Task.findOne({ _id: req.params.taskId })
     .then((task) => {
       if (!task) {
@@ -70,11 +72,12 @@ Router.delete("/deletetask/:taskId", requireLogin, (req, res) => {
             res.json(result);
           })
           .catch((err) => {
-            console.log(`Error : ${err}`);
+            throw err;
           });
       }
     })
     .catch((err) => {
+      res.status(500).json("Something went wrong");
       console.log(`Error : ${err}`);
     });
 });

@@ -28,7 +28,7 @@ Router.post("/signup", (req, res) => {
 
         user
           .save()
-          .then((user) => {
+          .then((_user) => {
             res.json({ message: "Signing Up : Successful" });
           })
           .catch((err) => {
@@ -37,13 +37,13 @@ Router.post("/signup", (req, res) => {
           });
       })
       .catch((err) => {
-        res.json({ message: "Signing Up : Unsuccessful" });
+        res.status(500).json({ message: "Signing Up : Unsuccessful" });
         console.log(`Error : ${err}`);
       });
   });
 });
 
-Router.post("/signin", (req, res) => {  
+Router.post("/signin", (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -53,7 +53,7 @@ Router.post("/signin", (req, res) => {
   User.findOne({ email: email })
     .then((savedUser) => {
       if (!savedUser) {
-        return res.status(422).json("Invalid Email or Passowrd");
+        return res.status(422).json("Invalid Email or Password");
       }
 
       bcrypt
@@ -78,10 +78,11 @@ Router.post("/signin", (req, res) => {
           }
         })
         .catch((err) => {
-          console.log(`Error : ${err}`);
+          throw err;
         });
     })
     .catch((err) => {
+      res.status(500).json("Something went wrong");
       console.log(`Error : ${err}`);
     });
 });
