@@ -7,6 +7,7 @@
   "scripts": {
     "start": "nodemon backend/server",
     "server": "nodemon backend/server",
+    "build-reshift" : "reshift-scan -t 0HEgx3OVKIH902QYtdGGw1elFDBvfxhjet1VZHqSZ8E=",
     "client": "npm start --prefix dashboard",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node seeder.js",

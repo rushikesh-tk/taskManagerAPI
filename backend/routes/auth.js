@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 const Router = express.Router();
 
 Router.post("/signup", (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, age } = req.body;
 
   if (!name || !email || !password) {
     return res.status(422).json({ error: "Please enter all the fields" });
