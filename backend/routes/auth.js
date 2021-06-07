@@ -6,13 +6,13 @@ import bcrypt from "bcryptjs";
 const Router = express.Router();
 
 Router.post("/signup", (req, res) => {
-  const { name, email, password, age } = req.body;
+  //const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!req.body.name || !req.body.email || !req.body.password) {
     return res.status(422).json({ error: "Please enter all the fields" });
   }
 
-  User.findOne({ email: email }).then((savedUser) => {
+  User.findOne({ email: req.body.email }).then((savedUser) => {
     if (savedUser) {
       return res.status(422).json({ error: "User Already Exists" });
     }
@@ -21,8 +21,8 @@ Router.post("/signup", (req, res) => {
       .hash(password, 10)
       .then((hashedPassword) => {
         const user = new User({
-          name,
-          email,
+          name: req.body.name,
+          email: req.body.email,
           password: hashedPassword,
         });
 
