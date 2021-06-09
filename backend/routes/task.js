@@ -9,23 +9,21 @@ import sanitize from "mongo-sanitize";
 const Router = express.Router();
 
 Router.post("/createapikey", (req, res) => {
-  const { applicationName, password } = req.body;
-
-  if (!applicationName || !password) {
+  if (!req.body.applicationName || !req.body.password) {
     return res.status(422).json("Credentials Missing");
   }
 
-  APIKEY.findOne({ applicationName })
+  APIKEY.findOne({ applicationName: sanitize(req.body.applicationName) })
     .then((foundApp) => {
       if (foundApp) {
         return res.status(422).json("Application already exists");
       }
 
       bcrypt
-        .hash(applicationName, 10)
+        .hash(req.body.applicationName, 10)
         .then((hashedAPIKEY) => {
           const apikey = new APIKEY({
-            applicationName,
+            applicationName: req.body.applicationName,
             apikey: hashedAPIKEY,
           });
 
@@ -47,20 +45,18 @@ Router.post("/createapikey", (req, res) => {
 });
 
 Router.post("/newuser", (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
+  if (!req.body.email) {
     return res.status(422).json("Email missing");
   }
 
-  User.findOne({ email })
+  User.findOne({ email: sanitize(req.body.email) })
     .then((foundUser) => {
       if (foundUser) {
         return res.status(422).json("User already exists");
       }
 
       const user = new User({
-        email,
+        email: req.body.email,
       });
 
       user
