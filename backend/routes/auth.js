@@ -2,17 +2,16 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
+import sanitize from "mongo-sanitize";
 
 const Router = express.Router();
 
 Router.post("/signup", (req, res) => {
-  //const { name, email, password } = req.body;
-
   if (!req.body.name || !req.body.email || !req.body.password) {
     return res.status(422).json({ error: "Please enter all the fields" });
   }
 
-  User.findOne({ email: req.body.email }).then((savedUser) => {
+  User.findOne({ email: sanitize(req.body.email) }).then((savedUser) => {
     if (savedUser) {
       return res.status(422).json({ error: "User Already Exists" });
     }
