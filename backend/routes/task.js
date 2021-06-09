@@ -4,6 +4,7 @@ import Task from "../models/taskModel.js";
 import APIKEY from "../models/apikey.js";
 import bcrypt from "bcryptjs";
 import requireLogin from "../middleware/requireLogin.js";
+import sanitize from "mongo-sanitize";
 
 const Router = express.Router();
 
@@ -101,15 +102,15 @@ Router.post("/task", requireLogin, (req, res) => {
     });
 });
 
-Router.get("/tasks/:email",  (req, res) => {
+Router.get("/tasks/:email", (req, res) => {
   const { email } = req.params;
-  console.log(email)
-  User.findOne({ email  })
+  console.log(email);
+  User.findOne({ email })
     .then((_user) => {
       if (!_user) {
         return res.status(422).json({ message: "User does not exists" });
       }
-      
+
       Task.find({ createdBy: _user._id })
         .then((result) => res.json(result))
         .catch((err) => {
@@ -160,8 +161,8 @@ Router.put("/task/:taskId", requireLogin, (req, res) => {
   Task.findByIdAndUpdate(
     req.params.taskId,
     {
-      title: req.body.title,
-      content: req.body.content,
+      title: sanitize(req.body.title),
+      content: sanitize(req.body.content),
     },
     {
       new: true,
