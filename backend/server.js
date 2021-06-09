@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 
 var limiter = new rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5,
+  max: 500,
 });
 
 app.use(express.json());

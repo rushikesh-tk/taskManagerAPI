@@ -135,7 +135,7 @@ Router.delete("/task/:taskId", requireLogin, (req, res) => {
 
 Router.put("/task/:taskId", requireLogin, (req, res) => {
   Task.findByIdAndUpdate(
-    req.params.taskId,
+    sanitize(req.params.taskId),
     {
       title: sanitize(req.body.title),
       content: sanitize(req.body.content),
