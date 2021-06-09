@@ -98,35 +98,15 @@ Router.post("/task", requireLogin, (req, res) => {
     });
 });
 
-Router.get("/tasks/:email", (req, res) => {
-  const { email } = req.params;
-  console.log(email);
-  User.findOne({ email })
-    .then((_user) => {
-      if (!_user) {
-        return res.status(422).json({ message: "User does not exists" });
-      }
+Router.get("/tasks", requireLogin, (req, res) => {
+  const { _id } = req.user;
 
-      Task.find({ createdBy: _user._id })
-        .then((result) => res.json(result))
-        .catch((err) => {
-          res.status(500).json("Something went wrong");
-          console.log(`Error : ${err}`);
-        });
-    })
+  Task.find({ createdBy: _id })
+    .then((data) => res.json(data))
     .catch((err) => {
       res.status(500).json("Something went wrong");
       console.log(`Error : ${err}`);
     });
-
-  // Task.find({ createdBy: req.user._id })
-  //   .then((result) => {
-  //     res.json({ result });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).json("Something went wrong");
-  //     console.log(`Error : ${err}`);
-  //   });
 });
 
 Router.delete("/task/:taskId", requireLogin, (req, res) => {
