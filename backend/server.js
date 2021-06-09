@@ -21,4 +21,9 @@ app.use(cors());
 app.use(auth);
 app.use(task);
 
+app.use(function (req, res, next) {
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  next();
+});
+
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
